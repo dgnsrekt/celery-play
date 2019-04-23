@@ -1,14 +1,11 @@
-from celery import Celery
+from celery_config import app
 import requests
-import time
-
-app = Celery("celery_blog", broker="redis://localhost:6379/0")
 
 
 @app.task
 def fetch_url(url):
     resp = requests.get(url)
-    print(resp.url, resp.status_code)
+    print(resp.status_code)
 
 
 def func(urls):
@@ -16,13 +13,13 @@ def func(urls):
         fetch_url.delay(url)
 
 
-URLS = [
-    "http://www.google.com",
-    "http://www.github.com",
-    "https://amazon.in",
-    "https://facebook.com",
-    "https://twitter.com",
-    "https://alexa.com",
-]
-
-func(URLS)
+if __name__ == "__main__":
+    func(
+        [
+            "http://google.com",
+            "https://amazon.in",
+            "https://facebook.com",
+            "https://twitter.com",
+            "https://alexa.com",
+        ]
+    )
